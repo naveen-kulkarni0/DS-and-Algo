@@ -2,10 +2,10 @@ package com.example.datastructure.hashtable;
 
 public class HashTable {
 
-	private String table[];
+	private EmployeeNode table[];
 
 	public HashTable(int size) {
-		table = new String[size];
+		table = new EmployeeNode[size];
 	}
 
 	/*
@@ -14,21 +14,68 @@ public class HashTable {
 	 * if two keys are of same length. Hence it is better to have 16 as the default value
 	 */
 	public HashTable() {
-		table = new String[16];
+		table = new EmployeeNode[16];
 	}
 
 	private int computeIndexByHash(String key) {
-		System.out.println(key.hashCode());
 		return key.hashCode() & (table.length - 1);
 	}
 
-	public void put(String key, String value) {
-		int index = computeIndexByHash(key);
-		table[index] =  value;
+	private boolean isOccupied(int index) {
+		return table[index] != null;
 	}
 
-	public String get(String key) {
+	/* Whenever the index is generated from hashCode, the can be collision (meaning multiple keys can give same index)
+	 * the frequency of this depends on the load factor.
+	 * There are 3 ways to avoid the collision viz Chaining (What is used in HashMap impl of JDK), linear probing and
+	 * multiple hashing.
+	 * The implementation below is of linear probing, whenever there is a collision we just increment the index until we find
+	 * the first free slot. When retrieving we make use of the key to to return the value.
+	 */
+	public void put(String key, Employee e) {
 		int index = computeIndexByHash(key);
-		return table[index];
+		int currentIndex = -1;
+		if(isOccupied(index) && !table[index].key.equals(key)) {
+			currentIndex = index++;
+			while(index!=currentIndex && isOccupied(index)) {
+				index = (index + 1) % table.length;
+			}
+		}
+		if(index == currentIndex) {
+			System.out.println("There is no more space to add");
+			return;
+		}
+		table[index] =  new EmployeeNode(key,e);
+	}
+	
+/**
+ * Getting the details back from the HashTable
+ * @param key - Required to obtain the details
+ * @return Employee - Details of the requested employee represented by the Key or null 
+ */
+	public Employee get(String key) {
+		int index = computeIndexByHash(key);
+		if(table[index] != null && table[index].key.equals(key)) {
+			return table[index].e;
+		}
+		int currentIndex = index;
+		if(++index == table.length) {
+			index=0;
+		}
+		while(index != currentIndex && table[index] != null && !table[index].key.equals(key)) {
+			index = (index + 1) % table.length;
+		}
+		if(currentIndex == index) {				
+			return null;
+		}
+		return table[index].e;
+	}
+
+	public void printTable() {
+		for(int i = 0; i < table.length; i++) {
+			if(null != table[i]) {
+				System.out.println(table[i].e);
+			}
+		}
 	}
 }
