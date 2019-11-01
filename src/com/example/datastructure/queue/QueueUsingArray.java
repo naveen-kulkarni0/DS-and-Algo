@@ -12,7 +12,8 @@ public class QueueUsingArray<E> {
 	}
 
 	public void add(E element) {
-		if(last == queue.length -1) {
+		if(last == queue.length) {
+			System.out.println("Resized the array");
 			E[] newQueue = (E[]) Array.newInstance(queue.getClass().getComponentType(),queue.length*2);
 			System.arraycopy(queue, 0, newQueue, 0, queue.length);
 			queue = newQueue;
@@ -21,7 +22,7 @@ public class QueueUsingArray<E> {
 	}
 
 	public E remove() {
-		if(first < 0)
+		if(last - first == queue.length - 1)
 			return null;
 		E removedElement = queue[first];
 		queue[first++] = null;
@@ -37,7 +38,7 @@ public class QueueUsingArray<E> {
 	public void printQueue() {
 		for (int i = 0; i < queue.length; i++) {
 			if(null != queue[i])
-			System.out.println(queue[i]);
+				System.out.println(queue[i]);
 		}
 	}
 }
