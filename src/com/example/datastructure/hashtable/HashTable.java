@@ -47,16 +47,24 @@ public class HashTable {
 		}
 		table[index] =  new EmployeeNode(key,e);
 	}
-	
-/**
- * Getting the details back from the HashTable
- * @param key - Required to obtain the details
- * @return Employee - Details of the requested employee represented by the Key or null 
- */
+
+	/**
+	 * Getting the details back from the HashTable
+	 * @param key - Required to obtain the details
+	 * @return Employee - Details of the requested employee represented by the Key or null 
+	 */
 	public Employee get(String key) {
+		int index = findKey(key);
+		if(index == -1) {
+			return null;
+		}
+		return table[index].e;
+	}
+
+	private int findKey(String key) {
 		int index = computeIndexByHash(key);
 		if(table[index] != null && table[index].key.equals(key)) {
-			return table[index].e;
+			return index;
 		}
 		int currentIndex = index;
 		if(++index == table.length) {
@@ -65,10 +73,21 @@ public class HashTable {
 		while(index != currentIndex && table[index] != null && !table[index].key.equals(key)) {
 			index = (index + 1) % table.length;
 		}
-		if(currentIndex == index) {				
-			return null;
+		if(null != table[index] 
+				&& table[index].key.equals(key)) {				
+			return index;
 		}
-		return table[index].e;
+		return -1;
+	}
+
+	public boolean remove(String key) {
+		int index = findKey(key);
+		if(index == -1) {
+			System.out.println("There is no element with the given key");
+			return false;
+		}
+		table[index] = null;
+		return true;
 	}
 
 	public void printTable() {

@@ -25,6 +25,9 @@ public class Starter {
 		myHash.put("ab", new Employee("Kulkarni","Naveen"));
 
 		System.out.println(myHash.get("AB"));
+		System.out.println(myHash.get("xy"));
+		System.out.println(myHash.get("XY"));
+		System.out.println(myHash.get(""));
 		
 		System.out.println("-------------------------------");
 		myHash.printTable();
